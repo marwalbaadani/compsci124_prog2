@@ -1,4 +1,4 @@
-strassen: strassen.o graph1_utils.o
+strassen: strassen.o
 	g++ strassen.o -o mst -std=c++11
 
 clean:
