@@ -4,6 +4,7 @@ using namespace std;
 
 int **operation(int **m, int **n, int size, int op)
 {
+    cout << size << endl;
     int **r;
     // or int **r; ?
     for (int i = 0; i < size; i++)
@@ -13,10 +14,13 @@ int **operation(int **m, int **n, int size, int op)
             if (op == 0)
             {
                 r[i][j] = m[i][j] - n[i][j];
+                // cout << m[i][j] << endl;
+                // cout << r[i][j] << endl;
             }
             else if (op == 1)
             {
                 r[i][j] = m[i][j] + n[i][j];
+                // cout << m[i][j] << endl;
             }
         }
     }
@@ -27,17 +31,30 @@ int **strassen(int **m, int **n)
 {
 
     int rows = sizeof(m) / sizeof(m[0]);
-    cout << rows;
+    cout << "rows" << rows << endl;
     int cols = sizeof(m[0]) / sizeof(m[0][0]);
 
-    int **a;
-    int **e;
-    int **b;
-    int **f;
-    int **c;
-    int **g;
-    int **d;
-    int **h;
+    int **a = new int *[cols / 2];
+    int **e = new int *[cols / 2];
+    int **b = new int *[cols / 2];
+    int **f = new int *[cols / 2];
+    int **c = new int *[cols / 2];
+    int **g = new int *[cols / 2];
+    int **d = new int *[cols / 2];
+    int **h = new int *[cols / 2];
+
+    for (int i = 0; i < cols / 2; i++)
+    {
+        a[i] = new int[rows / 2];
+        e[i] = new int[rows / 2];
+        b[i] = new int[rows / 2];
+        f[i] = new int[rows / 2];
+        c[i] = new int[rows / 2];
+        g[i] = new int[rows / 2];
+        d[i] = new int[rows / 2];
+        h[i] = new int[rows / 2];
+    }
+
     // quadrant 2
     for (int i = 0; i < rows / 2; i++)
     {
@@ -47,6 +64,7 @@ int **strassen(int **m, int **n)
             e[i][j] = n[i][j];
         }
     }
+
     // quadrant 1
     for (int i = cols / 2; i < cols; i++)
     {
@@ -74,18 +92,49 @@ int **strassen(int **m, int **n)
             h[i][j] = n[i][j];
         }
     }
-    int **s1 = strassen(operation(b, d, rows, 0), operation(g, h, rows, 1));
-    int **s2 = strassen(operation(a, d, rows, 1), operation(e, h, rows, 1));
-    int **s3 = strassen(operation(a, c, rows, 0), operation(e, f, rows, 1));
-    int **s4 = strassen(operation(a, b, rows, 0), h);
-    int **s5 = strassen(a, operation(f, h, rows, 1));
-    int **s6 = strassen(d, operation(g, e, rows, 0));
-    int **s7 = strassen(operation(c, d, rows, 1), e);
 
-    int **q2 = operation(operation(operation(s1, s2, rows, 1), s4, rows, 0), s6, rows, 1);
-    int **q1 = operation(s4, s5, rows, 0);
-    int **q3 = operation(s6, s7, rows, 1);
-    int **q4 = operation(operation(operation(s2, s3, rows, 0), s5, rows, 1), s7, rows, 0);
+    int **s1 = new int *[cols / 2];
+    int **s2 = new int *[cols / 2];
+
+    int **s3 = new int *[cols / 2];
+    int **s4 = new int *[cols / 2];
+    int **s5 = new int *[cols / 2];
+    int **s6 = new int *[cols / 2];
+    int **s7 = new int *[cols / 2];
+    int **q2 = new int *[cols / 2];
+    int **q1 = new int *[cols / 2];
+    int **q3 = new int *[cols / 2];
+    int **q4 = new int *[cols / 2];
+
+    for (int i = 0; i < cols / 2; i++)
+    {
+        s1[i] = new int[rows / 2];
+        s2[i] = new int[rows / 2];
+        s3[i] = new int[rows / 2];
+        s4[i] = new int[rows / 2];
+        s5[i] = new int[rows / 2];
+        s6[i] = new int[rows / 2];
+        s7[i] = new int[rows / 2];
+        q1[i] = new int[rows / 2];
+        q2[i] = new int[rows / 2];
+        q3[i] = new int[rows / 2];
+        q4[i] = new int[rows / 2];
+    }
+
+    s1 = strassen(operation(b, d, rows / 2, 0), operation(g, h, rows / 2, 1));
+    cout << "oh hello there" << endl;
+    s2 = strassen(operation(a, d, rows / 2, 1), operation(e, h, rows / 2, 1));
+    s3 = strassen(operation(a, c, rows / 2, 0), operation(e, f, rows / 2, 1));
+    s4 = strassen(operation(a, b, rows / 2, 0), h);
+    s5 = strassen(a, operation(f, h, rows / 2, 1));
+    s6 = strassen(d, operation(g, e, rows / 2, 0));
+    s7 = strassen(operation(c, d, rows / 2, 1), e);
+
+    q2 = operation(operation(operation(s1, s2, rows / 2, 1), s4, rows / 2, 0), s6, rows / 2, 1);
+    q1 = operation(s4, s5, rows / 2, 0);
+    q3 = operation(s6, s7, rows / 2, 1);
+    cout << "oh hello there" << endl;
+    q4 = operation(operation(operation(s2, s3, rows / 2, 0), s5, rows / 2, 1), s7, rows / 2, 0);
     int **r;
     // quadrant 2
     for (int i = 0; i < rows / 2; i++)
@@ -154,7 +203,6 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < dimension; j++)
         {
-            cout << "checkpoint 1.5" << endl;
             matrix1[i][j] = 2;
             matrix2[i][j] = 3;
         }
@@ -167,7 +215,7 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < dimension; j++)
         {
-            cout << m3[i][j];
+            cout << m3[i][j] << endl;
         }
     }
     int matrix3[n][n];
