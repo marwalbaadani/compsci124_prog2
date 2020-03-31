@@ -25,6 +25,7 @@ int **operation(int **m, int **n, int size, int op)
 // strassen takes two 2-d arrays, returns 2-d array
 int **strassen(int **m, int **n)
 {
+
     int rows = sizeof(m) / sizeof(m[0]);
     cout << rows;
     int cols = sizeof(m[0]) / sizeof(m[0][0]);
@@ -140,19 +141,25 @@ int main(int argc, char **argv)
         n = dimension;
 
     cout << "checkpoint 1" << endl;
-    int **matrix1;
-    int **matrix2;
+
+    int **matrix1 = new int *[dimension];
+    int **matrix2 = new int *[dimension];
+
+    for (int i = 0; i < dimension; i++)
+    {
+        matrix1[i] = new int[dimension];
+        matrix2[i] = new int[dimension];
+    }
     for (int i = 0; i < dimension; i++)
     {
         for (int j = 0; j < dimension; j++)
         {
+            cout << "checkpoint 1.5" << endl;
             matrix1[i][j] = 2;
             matrix2[i][j] = 3;
         }
     }
     cout << "checkpoint 2" << endl;
-
-    int matrix3[n][n];
 
     int **m3 = strassen(matrix1, matrix2);
 
@@ -163,6 +170,7 @@ int main(int argc, char **argv)
             cout << m3[i][j];
         }
     }
+    int matrix3[n][n];
     // for (int i = 0; i < dimension; i++) //naive method
     // {
     //     for (int j = 0; j < dimension; j++)
