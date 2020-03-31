@@ -41,10 +41,29 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < matrix1.size; j++)
         {
-            matrix1.array[i][j] = 7;
-            matrix2.array[i][j] = 3;
+            matrix1.array[i][j] = i * j + 1;
+            matrix2.array[i][j] = i + j + 1;
         }
     }
+
+    for (int i = 0; i < matrix1.size; i++)
+    {
+        for (int j = 0; j < matrix1.size; j++)
+        {
+            cout << matrix1.array[i][j] << " ";
+        }
+        cout << endl;
+    }   
+
+    cout << endl;
+    for (int i = 0; i < matrix1.size; i++)
+    {
+        for (int j = 0; j < matrix1.size; j++)
+        {
+            cout << matrix2.array[i][j] << " ";
+        }
+        cout << endl;
+    }   
 
     Matrix matrix3 = naive(matrix1, matrix2);
     Matrix matrix4 = strassen(matrix1, matrix2);
@@ -128,6 +147,7 @@ Matrix strassen(Matrix m1, Matrix m2)
 
     if (n == 1)
     {
+        cout << "base case" << endl;
         Matrix m3 = Matrix(1);
         m3.array[0][0] = m1.array[0][0] * m2.array[0][0];
         return m3;
@@ -141,44 +161,122 @@ Matrix strassen(Matrix m1, Matrix m2)
     Matrix d = Matrix(n / 2);
     Matrix h = Matrix(n / 2);
 
-    // quadrant 2
-    for (int i = 0; i < n / 2; i++)
+    // quardrant 1 and 2 for m1 and m2
+    cout << "checkpoint 1" << endl;
+    for (int rows = 0; rows < n / 2; rows++)
     {
-        for (int j = 0; j < n / 2; j++)
+        cout << "First for loop + our n: " << n << endl;
+        for (int cols = 0; cols < n / 2; cols++)
         {
-            a.array[i][j] = m1.array[i][j];
-            e.array[i][j] = m2.array[i][j];
+            a.array[rows][cols] = m1.array[rows][cols];
+            e.array[rows][cols] = m2.array[rows][cols];
+        }
+
+        int bfcols = 0;
+        for (int cols = n / 2; cols < n; cols++)
+        {
+            b.array[rows][bfcols] = m1.array[rows][bfcols];
+            f.array[rows][bfcols] = m2.array[rows][bfcols];
+            bfcols++;
         }
     }
 
-    // quadrant 1
-    for (int i = n / 2; i < n; i++)
+    // quadrant 3 and 4 for m1 and m2
+    for (int rows = n / 2; rows < n; rows++)
     {
-        for (int j = 0; j < n / 2; j++)
+        int cgrows = 0;
+        for (int cols = 0; cols < n / 2; cols++)
         {
-            b.array[i][j] = m1.array[i][j];
-            f.array[i][j] = m2.array[i][j];
+            c.array[cgrows][cols] = m1.array[rows][cols];
+            g.array[cgrows][cols] = m2.array[rows][cols];
+            cgrows++;
+        }
+
+        int dhrows = 0;
+        int dhcols = 0;
+        for (int cols = n / 2; cols < n; cols++)
+        {
+            d.array[dhrows][dhcols] = m1.array[rows][dhcols];
+            h.array[dhrows][dhcols] = m2.array[rows][dhcols];
+            dhrows++;
+            dhcols++;
         }
     }
 
-    // quadrant 3
-    for (int i = 0; i < n / 2; i++)
+    for (int i = 0; i < a.size; i++) 
     {
-        for (int j = n / 2; j < n; j++)
+        for (int j = 0; j < a.size; j++)
         {
-            c.array[i][j] = m1.array[i][j];
-            g.array[i][j] = m2.array[i][j];
+            cout << a.array[i][j] << " ";
         }
+        cout << endl;
     }
-    // quadrant 4
-    for (int i = 0; i < n / 2; i++)
+    cout << endl;
+    for (int i = 0; i < b.size; i++) 
     {
-        for (int j = n / 2; j < n; j++)
+        for (int j = 0; j < b.size; j++)
         {
-            d.array[i][j] = m1.array[i][j];
-            h.array[i][j] = m2.array[i][j];
+            cout << b.array[i][j] << " ";
         }
+        cout << endl;
     }
+    cout << endl;
+    for (int i = 0; i < c.size; i++) 
+    {
+        for (int j = 0; j < c.size; j++)
+        {
+            cout << c.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    for (int i = 0; i < d.size; i++) 
+    {
+        for (int j = 0; j < d.size; j++)
+        {
+            cout << d.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // // quadrant 2
+    // for (int i = 0; i < n / 2; i++)
+    // {
+    //     for (int j = 0; j < n / 2; j++)
+    //     {
+    //         a.array[i][j] = m1.array[i][j];
+    //         e.array[i][j] = m2.array[i][j];
+    //     }
+    // }
+
+    // // quadrant 1
+    // for (int i = n / 2; i < n; i++)
+    // {
+    //     for (int j = 0; j < n / 2; j++)
+    //     {
+    //         b.array[i][j] = m1.array[i][j];
+    //         f.array[i][j] = m2.array[i][j];
+    //     }
+    // }
+
+    // // quadrant 3
+    // for (int i = 0; i < n / 2; i++)
+    // {
+    //     for (int j = n / 2; j < n; j++)
+    //     {
+    //         c.array[i][j] = m1.array[i][j];
+    //         g.array[i][j] = m2.array[i][j];
+    //     }
+    // }
+    // // quadrant 4
+    // for (int i = 0; i < n / 2; i++)
+    // {
+    //     for (int j = n / 2; j < n; j++)
+    //     {
+    //         d.array[i][j] = m1.array[i][j];
+    //         h.array[i][j] = m2.array[i][j];
+    //     }
+    // }
 
     Matrix s1 = Matrix(n / 2);
     Matrix s2 = Matrix(n / 2);
