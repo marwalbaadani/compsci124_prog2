@@ -41,8 +41,8 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < matrix1.size; j++)
         {
-            matrix1.array[i][j] = i * j + 1;
-            matrix2.array[i][j] = i + j + 1;
+            matrix2.array[i][j] = i * j + 1;
+            matrix1.array[i][j] = i + j + 1;
         }
     }
 
@@ -61,6 +61,17 @@ int main(int argc, char **argv)
         for (int j = 0; j < matrix1.size; j++)
         {
             cout << matrix2.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    Matrix matrix5 = Matrix(dimension);
+    matrix5 = subtract(matrix1, matrix2);
+    cout << endl;
+    for (int i = 0; i < matrix5.size; i++)
+    {
+        for (int j = 0; j < matrix5.size; j++)
+        {
+            cout << matrix5.array[i][j] << " ";
         }
         cout << endl;
     }
@@ -137,6 +148,7 @@ Matrix subtract(Matrix m1, Matrix m2)
             m3.array[i][j] = m1.array[i][j] - m2.array[i][j];
         }
     }
+
     return m3;
 }
 
@@ -147,10 +159,11 @@ Matrix strassen(Matrix m1, Matrix m2)
 
     if (n == 1)
     {
-        cout << "base case" << endl;
+
         Matrix m3 = Matrix(1);
         m3.array[0][0] = m1.array[0][0] * m2.array[0][0];
-        cout << m3.array[0][0] << endl;
+
+        cout << m1.array[0][0] << endl;
         return m3;
     }
 
@@ -164,12 +177,13 @@ Matrix strassen(Matrix m1, Matrix m2)
     Matrix h = Matrix(n / 2);
 
     // quardrant 1 and 2 for m1 and m2
-    cout << "checkpoint 1" << endl;
+
     for (int rows = 0; rows < n / 2; rows++)
     {
-        cout << "First for loop + our n: " << n << endl;
+
         for (int cols = 0; cols < n / 2; cols++)
         {
+
             a.array[rows][cols] = m1.array[rows][cols];
             e.array[rows][cols] = m2.array[rows][cols];
         }
@@ -197,7 +211,7 @@ Matrix strassen(Matrix m1, Matrix m2)
             h.array[rows - n / 2][cols - n / 2] = m2.array[rows][cols];
         }
     }
-
+    cout << "a: ";
     for (int i = 0; i < a.size; i++)
     {
         for (int j = 0; j < a.size; j++)
@@ -207,6 +221,7 @@ Matrix strassen(Matrix m1, Matrix m2)
         cout << endl;
     }
     cout << endl;
+    cout << "b: ";
     for (int i = 0; i < b.size; i++)
     {
         for (int j = 0; j < b.size; j++)
@@ -216,6 +231,7 @@ Matrix strassen(Matrix m1, Matrix m2)
         cout << endl;
     }
     cout << endl;
+    cout << "c: ";
     for (int i = 0; i < c.size; i++)
     {
         for (int j = 0; j < c.size; j++)
@@ -225,11 +241,32 @@ Matrix strassen(Matrix m1, Matrix m2)
         cout << endl;
     }
     cout << endl;
+    cout << "d: ";
     for (int i = 0; i < d.size; i++)
     {
         for (int j = 0; j < d.size; j++)
         {
             cout << d.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    cout << "g: ";
+    for (int i = 0; i < g.size; i++)
+    {
+        for (int j = 0; j < g.size; j++)
+        {
+            cout << g.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    cout << "h: ";
+    for (int i = 0; i < h.size; i++)
+    {
+        for (int j = 0; j < h.size; j++)
+        {
+            cout << h.array[i][j] << " ";
         }
         cout << endl;
     }
@@ -247,8 +284,19 @@ Matrix strassen(Matrix m1, Matrix m2)
     Matrix q4 = Matrix(n / 2);
 
     s1 = strassen(subtract(b, d), add(g, h));
-    cout << "checkpoint 1" << endl;
-    cout << n << endl;
+    cout << "s1: " << endl;
+
+    for (int i = 0; i < s1.size; i++)
+    {
+        for (int j = 0; j < s1.size; j++)
+        {
+            cout << s1.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl
+         << endl;
+
     s2 = strassen(add(a, d), add(e, h));
     s3 = strassen(subtract(a, c), add(e, f));
     s4 = strassen(subtract(a, b), h);
@@ -261,21 +309,24 @@ Matrix strassen(Matrix m1, Matrix m2)
     q3 = add(s6, s7);
     q4 = subtract(add(subtract(s2, s3), s5), s7);
 
-    Matrix result = Matrix(n / 2);
+    Matrix result = Matrix(n);
+
     for (int i = 0; i < n / 2; i++)
     {
         for (int j = 0; j < n / 2; j++)
         {
+
             result.array[i][j] = q2.array[i][j];
         }
     }
 
-    // quadrant 1
+    // quadrant 3
     for (int i = n / 2; i < n; i++)
     {
         for (int j = 0; j < n / 2; j++)
         {
-            result.array[i][j] = q1.array[i][j];
+
+            result.array[i][j] = q1.array[i - n / 2][j];
         }
     }
 
@@ -283,15 +334,16 @@ Matrix strassen(Matrix m1, Matrix m2)
     {
         for (int j = n / 2; j < n; j++)
         {
-            result.array[i][j] = q3.array[i][j];
+
+            result.array[i][j] = q3.array[i][j - n / 2];
         }
     }
     // quadrant 4
-    for (int i = 0; i < n / 2; i++)
+    for (int i = n / 2; i < n; i++)
     {
         for (int j = n / 2; j < n; j++)
         {
-            result.array[i][j] = q4.array[i][j];
+            result.array[i][j] = q4.array[i - n / 2][j - n / 2];
         }
     }
     return result;
