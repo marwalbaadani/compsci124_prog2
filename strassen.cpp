@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -28,7 +29,6 @@ Matrix subtract(Matrix m1, Matrix m2);
 
 int main(int argc, char **argv)
 {
-
     int flag = atoi(argv[1]);
     int dimension = atoi(argv[2]);
     char *file = argv[3];
@@ -38,42 +38,33 @@ int main(int argc, char **argv)
     Matrix matrix2 = Matrix(dimension);
 
     // Matrix 1 and 2 creation
-    for (int i = 0; i < matrix1.size; i++)
+    string line;
+    ifstream inFile("nums.txt");
+    if (inFile.is_open())
     {
-        for (int j = 0; j < matrix1.size; j++)
+        for (int i = 0; i < matrix1.size; i++)
         {
-            matrix2.array[i][j] = i * j + 1;
-            matrix1.array[i][j] = i + j + 1;
+            for (int j = 0; j < matrix1.size; j++)
+            {
+                getline(inFile, line);
+                matrix1.array[i][j] = stoi(line);
+            }
+        }
+        for (int i = 0; i < matrix1.size; i++)
+        {
+            for (int k = 0; k < matrix1.size; k++)
+            {
+                getline(inFile, line);
+                matrix2.array[i][k] = stoi(line);
+            }
         }
     }
-
-    // Printing Matrix 1
-    cout << "Matrix 1" << endl;
-    for (int i = 0; i < matrix1.size; i++)
-    {
-        for (int j = 0; j < matrix1.size; j++)
-        {
-            cout << matrix1.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    // Printing Matrix 2
-    cout << "Matrix 2" << endl;
-    for (int i = 0; i < matrix1.size; i++)
-    {
-        for (int j = 0; j < matrix1.size; j++)
-        {
-            cout << matrix2.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    else
+        cout << "Unable to open file";
+    inFile.close();
 
     Matrix matrix3 = naive(matrix1, matrix2);
     Matrix matrix4 = strassen(matrix1, matrix2);
-
     // Printing Naive Matrix Multiplication Solution
     cout << "Naive Matrix Multiplication Solution" << endl;
     for (int i = 0; i < matrix3.size; i++)
@@ -201,95 +192,6 @@ Matrix strassen(Matrix m1, Matrix m2)
         }
     }
 
-    // Printing out quadrants for A - G
-    cout << "Quadrant A Matrix 1" << endl;
-    for (int i = 0; i < a.size; i++)
-    {
-        for (int j = 0; j < a.size; j++)
-        {
-            cout << a.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Quadrant B Matrix 1" << endl;
-    for (int i = 0; i < b.size; i++)
-    {
-        for (int j = 0; j < b.size; j++)
-        {
-            cout << b.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Quadrant C Matrix 1" << endl;
-    for (int i = 0; i < c.size; i++)
-    {
-        for (int j = 0; j < c.size; j++)
-        {
-            cout << c.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Quadrant D Matrix 1" << endl;
-    for (int i = 0; i < d.size; i++)
-    {
-        for (int j = 0; j < d.size; j++)
-        {
-            cout << d.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Quadrant E Matrix 2" << endl;
-    for (int i = 0; i < e.size; i++)
-    {
-        for (int j = 0; j < e.size; j++)
-        {
-            cout << e.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;   
-
-    cout << "Quadrant F Matrix 2" << endl;
-    for (int i = 0; i < f.size; i++)
-    {
-        for (int j = 0; j < f.size; j++)
-        {
-            cout << f.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl; 
-
-    cout << "Quadrant G Matrix 2" << endl;
-    for (int i = 0; i < g.size; i++)
-    {
-        for (int j = 0; j < g.size; j++)
-        {
-            cout << g.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Quadrant H Matrix 2" << endl;
-    for (int i = 0; i < h.size; i++)
-    {
-        for (int j = 0; j < h.size; j++)
-        {
-            cout << h.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
     Matrix s1 = Matrix(n / 2);
     Matrix s2 = Matrix(n / 2);
     Matrix s3 = Matrix(n / 2);
@@ -303,88 +205,12 @@ Matrix strassen(Matrix m1, Matrix m2)
     Matrix qD = Matrix(n / 2);
 
     s1 = strassen(subtract(b, d), add(g, h));
-    cout << "S1 Matrix" << endl;
-    for (int i = 0; i < s1.size; i++)
-    {
-        for (int j = 0; j < s1.size; j++)
-        {
-            cout << s1.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-
     s2 = strassen(add(a, d), add(e, h));
-    cout << "S2 Matrix" << endl;
-    for (int i = 0; i < s1.size; i++)
-    {
-        for (int j = 0; j < s1.size; j++)
-        {
-            cout << s2.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-
     s3 = strassen(subtract(a, c), add(e, f));
-    cout << "S3 Matrix" << endl;
-    for (int i = 0; i < s3.size; i++)
-    {
-        for (int j = 0; j < s3.size; j++)
-        {
-            cout << s3.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-
     s4 = strassen(add(a, b), h);
-    cout << "S4 Matrix" << endl;
-    for (int i = 0; i < s1.size; i++)
-    {
-        for (int j = 0; j < s1.size; j++)
-        {
-            cout << s4.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-
     s5 = strassen(a, subtract(f, h));
-    cout << "S5 Matrix" << endl;
-    for (int i = 0; i < s5.size; i++)
-    {
-        for (int j = 0; j < s5.size; j++)
-        {
-            cout << s5.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-
     s6 = strassen(d, subtract(g, e));
-    cout << "S6 Matrix" << endl;
-    for (int i = 0; i < s1.size; i++)
-    {
-        for (int j = 0; j < s1.size; j++)
-        {
-            cout << s6.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-
     s7 = strassen(add(c, d), e);
-    cout << "S7 Matrix" << endl;
-    for (int i = 0; i < s7.size; i++)
-    {
-        for (int j = 0; j < s7.size; j++)
-        {
-            cout << s7.array[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
 
     qA = add(subtract(add(s1, s2), s4), s6);
     qB = add(s4, s5);
