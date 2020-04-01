@@ -169,7 +169,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     Matrix d = Matrix(n / 2);
     Matrix h = Matrix(n / 2);
 
-    // quardrant 1 and 2 for m1 and m2
+    // quardrant A and B for m1 and m2
     for (int rows = 0; rows < n / 2; rows++)
     {
         for (int cols = 0; cols < n / 2; cols++)
@@ -185,7 +185,7 @@ Matrix strassen(Matrix m1, Matrix m2)
         }
     }
 
-    // quadrant 3 and 4 for m1 and m2
+    // quadrant C and D for m1 and m2
     for (int rows = n / 2; rows < n; rows++)
     {
         for (int cols = 0; cols < n / 2; cols++)
@@ -202,7 +202,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
 
     // Printing out quadrants for A - G
-    cout << "Quadrant 1 Matrix 1 (A)" << endl;
+    cout << "Quadrant A Matrix 1" << endl;
     for (int i = 0; i < a.size; i++)
     {
         for (int j = 0; j < a.size; j++)
@@ -213,7 +213,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl;
 
-    cout << "Quadrant 2 Matrix 1 (B)" << endl;
+    cout << "Quadrant B Matrix 1" << endl;
     for (int i = 0; i < b.size; i++)
     {
         for (int j = 0; j < b.size; j++)
@@ -224,7 +224,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl;
 
-    cout << "Quadrant 3 Matrix 1 (C)" << endl;
+    cout << "Quadrant C Matrix 1" << endl;
     for (int i = 0; i < c.size; i++)
     {
         for (int j = 0; j < c.size; j++)
@@ -235,7 +235,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl;
 
-    cout << "Quadrant 4 Matrix 1 (D)" << endl;
+    cout << "Quadrant D Matrix 1" << endl;
     for (int i = 0; i < d.size; i++)
     {
         for (int j = 0; j < d.size; j++)
@@ -246,7 +246,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl;
 
-    cout << "Quadrant 1 Matrix 2 (E)" << endl;
+    cout << "Quadrant E Matrix 2" << endl;
     for (int i = 0; i < e.size; i++)
     {
         for (int j = 0; j < e.size; j++)
@@ -257,7 +257,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl;   
 
-    cout << "Quadrant 2 Matrix 2 (F)" << endl;
+    cout << "Quadrant F Matrix 2" << endl;
     for (int i = 0; i < f.size; i++)
     {
         for (int j = 0; j < f.size; j++)
@@ -268,7 +268,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl; 
 
-    cout << "Quadrant 3 Matrix 2 (G)" << endl;
+    cout << "Quadrant G Matrix 2" << endl;
     for (int i = 0; i < g.size; i++)
     {
         for (int j = 0; j < g.size; j++)
@@ -279,7 +279,7 @@ Matrix strassen(Matrix m1, Matrix m2)
     }
     cout << endl;
 
-    cout << "Quadrant 4 Matrix 2 (H)" << endl;
+    cout << "Quadrant H Matrix 2" << endl;
     for (int i = 0; i < h.size; i++)
     {
         for (int j = 0; j < h.size; j++)
@@ -297,10 +297,10 @@ Matrix strassen(Matrix m1, Matrix m2)
     Matrix s5 = Matrix(n / 2);
     Matrix s6 = Matrix(n / 2);
     Matrix s7 = Matrix(n / 2);
-    Matrix q2 = Matrix(n / 2);
-    Matrix q1 = Matrix(n / 2);
-    Matrix q3 = Matrix(n / 2);
-    Matrix q4 = Matrix(n / 2);
+    Matrix qA = Matrix(n / 2);
+    Matrix qB = Matrix(n / 2);
+    Matrix qC = Matrix(n / 2);
+    Matrix qD = Matrix(n / 2);
 
     s1 = strassen(subtract(b, d), add(g, h));
     cout << "S1 Matrix" << endl;
@@ -327,6 +327,16 @@ Matrix strassen(Matrix m1, Matrix m2)
     cout << endl << endl;
 
     s3 = strassen(subtract(a, c), add(e, f));
+    cout << "S3 Matrix" << endl;
+    for (int i = 0; i < s3.size; i++)
+    {
+        for (int j = 0; j < s3.size; j++)
+        {
+            cout << s3.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
 
     s4 = strassen(add(a, b), h);
     cout << "S4 Matrix" << endl;
@@ -341,6 +351,17 @@ Matrix strassen(Matrix m1, Matrix m2)
     cout << endl << endl;
 
     s5 = strassen(a, subtract(f, h));
+    cout << "S5 Matrix" << endl;
+    for (int i = 0; i < s5.size; i++)
+    {
+        for (int j = 0; j < s5.size; j++)
+        {
+            cout << s5.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
+
     s6 = strassen(d, subtract(g, e));
     cout << "S6 Matrix" << endl;
     for (int i = 0; i < s1.size; i++)
@@ -354,47 +375,60 @@ Matrix strassen(Matrix m1, Matrix m2)
     cout << endl << endl;
 
     s7 = strassen(add(c, d), e);
+    cout << "S7 Matrix" << endl;
+    for (int i = 0; i < s7.size; i++)
+    {
+        for (int j = 0; j < s7.size; j++)
+        {
+            cout << s7.array[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
 
-    q2 = add(subtract(add(s1, s2), s4), s6);
-    q1 = subtract(s4, s5);
-    q3 = add(s6, s7);
-    q4 = subtract(add(subtract(s2, s3), s5), s7);
+    qA = add(subtract(add(s1, s2), s4), s6);
+    qB = add(s4, s5);
+    qC = add(s6, s7);
+    qD = subtract(add(subtract(s2, s3), s5), s7);
 
     Matrix result = Matrix(n);
 
+    // Quadrant A
     for (int i = 0; i < n / 2; i++)
     {
         for (int j = 0; j < n / 2; j++)
         {
 
-            result.array[i][j] = q2.array[i][j];
+            result.array[i][j] = qA.array[i][j];
         }
     }
 
-    // quadrant 3
-    for (int i = n / 2; i < n; i++)
-    {
-        for (int j = 0; j < n / 2; j++)
-        {
-
-            result.array[i][j] = q1.array[i - n / 2][j];
-        }
-    }
-
+    // Quadrant B
     for (int i = 0; i < n / 2; i++)
     {
         for (int j = n / 2; j < n; j++)
         {
 
-            result.array[i][j] = q3.array[i][j - n / 2];
+            result.array[i][j] = qB.array[i][j - n / 2];
         }
     }
-    // quadrant 4
+
+    // Quadrant C
+    for (int i = n / 2; i < n; i++)
+    {
+        for (int j = 0; j < n / 2; j++)
+        {
+
+            result.array[i][j] = qC.array[i - n / 2][j];
+        }
+    }
+
+    // quadrant D
     for (int i = n / 2; i < n; i++)
     {
         for (int j = n / 2; j < n; j++)
         {
-            result.array[i][j] = q4.array[i - n / 2][j - n / 2];
+            result.array[i][j] = qD.array[i - n / 2][j - n / 2];
         }
     }
     return result;
