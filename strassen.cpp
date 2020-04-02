@@ -41,6 +41,8 @@ Matrix strassen(Matrix m1, Matrix m2);
 
 Matrix strassen2(Matrix m1, Matrix m2);
 
+Matrix strassen_triangle();
+
 Matrix naive(Matrix m1, Matrix m2);
 
 Matrix add(Matrix m1, Matrix m2);
@@ -99,38 +101,8 @@ int main(int argc, char **argv)
 
     //Matrix matrix3 = naive(matrix1, matrix2);
     Matrix matrix4 = strassen2(matrix1, matrix2);
+    strassen_triangle();
 
-    // for (int j = 0; j < 5; j++)
-    // {
-    //     for (int i = 1; i < 20; i++)
-    //     {
-    //         cout << " i = " << i << endl;
-    //         auto start = steady_clock::now();
-
-    //         strassen2(matrix1, matrix2, i);
-    //         auto end = steady_clock::now();
-    //         auto elapsed = duration_cast<microseconds>(end - start);
-    //         auto modified = elapsed.count();
-
-    //         auto start2 = steady_clock::now();
-    //         strassen(matrix1, matrix2);
-    //         auto end2 = steady_clock::now();
-    //         auto elapsed2 = duration_cast<microseconds>(end2 - start2);
-    //         auto regular = elapsed2.count();
-
-    //         if (modified > regular)
-    //         {
-    //             cout << "MODIFIED GREATER" << endl;
-    //         }
-    //         else if (modified < regular)
-    //         {
-    //             cout << "REGULAR GREATER" << endl;
-    //         }
-    //     }
-    //     cout << endl
-    //          << endl;
-    // }
-    // cout << "Strassen Diagonal" << endl;
     int count = 0;
     for (int i = 0; i < dimension; i++)
     {
@@ -138,6 +110,7 @@ int main(int argc, char **argv)
         count++;
     }
     cout << endl;
+
 }
 
 // Naive solution
@@ -425,6 +398,67 @@ Matrix strassen2(Matrix m1, Matrix m2)
             result.array[i][j] = qD.array[i - n / 2][j - n / 2];
         }
     }
+
+    return result;
+}
+
+Matrix strassen_triangle()
+{
+    float p1 = .01;
+    float p2 = .02;
+    float p3 = .03;
+    float p4 = .04;
+    float p5 = .05;
+
+    Matrix triangle = Matrix(1024);
+    for (int i = 0; i < triangle.size; ++i)
+    {
+        for (int j = i + 1; j < triangle.size; ++j)
+        {
+            triangle.array[i][j] = -1;
+            triangle.array[j][i] = -1;
+        }
+    }
+    for (int i = 0; i < triangle.size; i++) 
+    {
+        for (int j = 0; j < triangle.size; j++)
+        {
+            float prob = rand() % 100 + 1;
+            if (triangle.array[i][j] == -1)
+            {
+                if (prob <= (p1 * 100)) 
+                {
+                    triangle.array[i][j] = 1;
+                    triangle.array[j][i] = 1;
+                }
+                else
+                {
+                    triangle.array[i][j] = 0;
+                    triangle.array[j][i] = 0;                  
+                }
+            }
+            else continue;
+        }
+    }
+
+    Matrix result = Matrix(1024);
+    result = strassen2(strassen2(triangle, triangle), triangle);
+
+    int count = 0;
+    int total_triangles = 0;
+    for (int i = 0; i < result.size; i++)
+    {
+        for (int j = 0; j < result.size; j++)
+        {
+            if (i == j && count < 1024)
+            {
+                total_triangles += result.array[i][j];
+                count++;
+            }
+        }
+    }
+    total_triangles = total_triangles / 6;
+    cout << "total triangles: " << total_triangles << endl;
 
     return result;
 }
