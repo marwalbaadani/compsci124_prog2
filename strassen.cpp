@@ -3,8 +3,11 @@
 #include <string>
 #include <ctime>
 #include <chrono>
+
 using namespace std::chrono;
 using namespace std;
+
+const int BOUND = 15;
 
 struct Matrix
 {
@@ -22,27 +25,21 @@ struct Matrix
 };
 
 // credit to geeks for geeks
-unsigned int nextPowerOf2(unsigned int n)
+unsigned int withPadding(unsigned int n)
 {
     unsigned count = 0;
-
-    // First n in the below condition
-    // is for the case where n is 0
-    if (n && !(n & (n - 1)))
-        return n;
-
-    while (n != 0)
+    while (n > BOUND)
     {
-        n >>= 1;
         count += 1;
+        n += 1;
+        n >>= 1;
     }
-
-    return 1 << count;
+    return n << count;
 }
 
 Matrix strassen(Matrix m1, Matrix m2);
 
-Matrix strassen2(Matrix m1, Matrix m2, int num);
+Matrix strassen2(Matrix m1, Matrix m2);
 
 Matrix naive(Matrix m1, Matrix m2);
 
@@ -57,19 +54,18 @@ int main(int argc, char **argv)
     char *file = argv[3];
     int n;
 
-    n = nextPowerOf2(dimension);
-    cout << "n: " << n << endl;
+    n = withPadding(dimension);
     Matrix matrix1 = Matrix(n);
     Matrix matrix2 = Matrix(n);
 
-    // Matrix 1 and 2 creation
+    // // Matrix 1 and 2 creation
     string line;
-    ifstream inFile("nums.txt");
+    ifstream inFile(file);
     if (inFile.is_open())
     {
-        for (int i = 0; i < matrix1.size; i++)
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < matrix1.size; j++)
+            for (int j = 0; j < n; j++)
             {
                 if (i >= dimension || j >= dimension)
                 {
@@ -82,13 +78,13 @@ int main(int argc, char **argv)
                 }
             }
         }
-        for (int i = 0; i < matrix2.size; i++)
+        for (int i = 0; i < n; i++)
         {
-            for (int k = 0; k < matrix2.size; k++)
+            for (int k = 0; k < n; k++)
             {
                 if (i >= dimension || k >= dimension)
                 {
-                    matrix1.array[i][k] = 0;
+                    matrix2.array[i][k] = 0;
                 }
                 else
                 {
@@ -98,55 +94,48 @@ int main(int argc, char **argv)
             }
         }
     }
-    else
-        cout << "Unable to open file";
+
     inFile.close();
 
-    Matrix matrix3 = naive(matrix1, matrix2);
-    Matrix matrix4 = strassen(matrix1, matrix2);
+    //Matrix matrix3 = naive(matrix1, matrix2);
+    Matrix matrix4 = strassen2(matrix1, matrix2);
 
-    for (int j = 0; j < 5; j++)
-    {
-        for (int i = 1; i < 20; i++)
-        {
-            cout << " i = " << i << endl;
-            auto start = steady_clock::now();
+    // for (int j = 0; j < 5; j++)
+    // {
+    //     for (int i = 1; i < 20; i++)
+    //     {
+    //         cout << " i = " << i << endl;
+    //         auto start = steady_clock::now();
 
-            strassen2(matrix1, matrix2, i);
-            auto end = steady_clock::now();
-            auto elapsed = duration_cast<microseconds>(end - start);
-            auto modified = elapsed.count();
+    //         strassen2(matrix1, matrix2, i);
+    //         auto end = steady_clock::now();
+    //         auto elapsed = duration_cast<microseconds>(end - start);
+    //         auto modified = elapsed.count();
 
-            auto start2 = steady_clock::now();
-            strassen(matrix1, matrix2);
-            auto end2 = steady_clock::now();
-            auto elapsed2 = duration_cast<microseconds>(end2 - start2);
-            auto regular = elapsed2.count();
+    //         auto start2 = steady_clock::now();
+    //         strassen(matrix1, matrix2);
+    //         auto end2 = steady_clock::now();
+    //         auto elapsed2 = duration_cast<microseconds>(end2 - start2);
+    //         auto regular = elapsed2.count();
 
-            if (modified > regular)
-            {
-                cout << "MODIFIED GREATER" << endl;
-            }
-            else if (modified < regular)
-            {
-                cout << "REGULAR GREATER" << endl;
-            }
-        }
-        cout << endl
-             << endl;
-    }
-    cout << "Strassen Diagonal" << endl;
+    //         if (modified > regular)
+    //         {
+    //             cout << "MODIFIED GREATER" << endl;
+    //         }
+    //         else if (modified < regular)
+    //         {
+    //             cout << "REGULAR GREATER" << endl;
+    //         }
+    //     }
+    //     cout << endl
+    //          << endl;
+    // }
+    // cout << "Strassen Diagonal" << endl;
     int count = 0;
-    for (int i = 0; i < matrix4.size; i++)
+    for (int i = 0; i < dimension; i++)
     {
-        for (int j = 0; j < matrix4.size; j++)
-        {
-            if (i == j && count < dimension)
-            {
-                cout << matrix4.array[i][j] << " ";
-                count++;
-            }
-        }
+        cout << matrix4.array[i][i] << endl;
+        count++;
     }
     cout << endl;
 }
@@ -318,13 +307,14 @@ Matrix strassen(Matrix m1, Matrix m2)
             result.array[i][j] = qD.array[i - n / 2][j - n / 2];
         }
     }
+
     return result;
 }
 
-Matrix strassen2(Matrix m1, Matrix m2, int num)
+Matrix strassen2(Matrix m1, Matrix m2)
 {
     int n = m1.size;
-    if (n == num)
+    if (n <= BOUND)
     {
         return naive(m1, m2);
     }
@@ -382,13 +372,13 @@ Matrix strassen2(Matrix m1, Matrix m2, int num)
     Matrix qC = Matrix(n / 2);
     Matrix qD = Matrix(n / 2);
 
-    s1 = strassen(subtract(b, d), add(g, h));
-    s2 = strassen(add(a, d), add(e, h));
-    s3 = strassen(subtract(a, c), add(e, f));
-    s4 = strassen(add(a, b), h);
-    s5 = strassen(a, subtract(f, h));
-    s6 = strassen(d, subtract(g, e));
-    s7 = strassen(add(c, d), e);
+    s1 = strassen2(subtract(b, d), add(g, h));
+    s2 = strassen2(add(a, d), add(e, h));
+    s3 = strassen2(subtract(a, c), add(e, f));
+    s4 = strassen2(add(a, b), h);
+    s5 = strassen2(a, subtract(f, h));
+    s6 = strassen2(d, subtract(g, e));
+    s7 = strassen2(add(c, d), e);
 
     qA = add(subtract(add(s1, s2), s4), s6);
     qB = add(s4, s5);
@@ -435,5 +425,6 @@ Matrix strassen2(Matrix m1, Matrix m2, int num)
             result.array[i][j] = qD.array[i - n / 2][j - n / 2];
         }
     }
+
     return result;
 }
